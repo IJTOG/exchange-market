@@ -1,0 +1,8 @@
+**/node_modules/*
+**/out/*
+**/.next/*
+
+# graphql-let
+__generated__
+*.graphql.d.ts
+*.graphqls.d.ts
