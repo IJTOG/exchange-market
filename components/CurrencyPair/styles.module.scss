@@ -1,0 +1,14 @@
+@import "styles/variables.module";
+
+.currencyTabs {
+  margin-top: 24px;
+}
+
+.currencyLabel {
+  width: 180px;
+  text-align: center;
+}
+
+.currencyPrice {
+  color: $primary-color;
+}

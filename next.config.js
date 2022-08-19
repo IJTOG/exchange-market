@@ -3,7 +3,7 @@ const withAntdLess = require("next-plugin-antd-less");
 const path = require("path");
 
 const nextConfig = withAntdLess({
-  reactStrictMode: true,
+  reactStrictMode: false,
   swcMinify: true,
   modifyVars: { "@primary-color": "#1441E5" },
   lessVarsFilePathAppendToEndOfContent: false,
@@ -11,7 +11,6 @@ const nextConfig = withAntdLess({
 
   sassOptions: {
     includePaths: [path.join(__dirname, "styles")]
-    // prependData: `@import "variables.module.scss";`
   },
 
   webpack(config) {
