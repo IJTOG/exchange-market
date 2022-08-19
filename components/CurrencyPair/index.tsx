@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import React, { useState, useEffect } from "react";
-import { Tabs, Card } from "antd";
+import { Tabs } from "antd";
 import { pairs } from "utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPairState } from "store/pairSlice";
@@ -8,12 +8,31 @@ import { fetch24hrsTicker } from "store/saga/pair";
 import Head from "next/head";
 import styles from "./styles.module.scss";
 import { priceFormat } from "@/utils/formatNumber";
+import CurrencyCard from "./card";
+import { TabsPosition } from "antd/lib/tabs";
 
 const CurrencyPair: React.FC<any> = () => {
   const router = useRouter();
   const dispatch = useDispatch();
   const pairState = useSelector(selectPairState);
   const [active, setActive] = useState<string>("");
+  const [position, setPosition] = useState<TabsPosition>("left");
+
+  useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth <= 700 && position === "left") {
+        setPosition("top");
+      } else if (window.innerWidth > 700 && position === "top") {
+        setPosition("left");
+      }
+    }
+
+    window.addEventListener("resize", handleResize);
+
+    return () => {
+      window.removeEventListener("resize", handleResize);
+    };
+  });
 
   useEffect(() => {
     const query = router.query;
@@ -51,30 +70,29 @@ const CurrencyPair: React.FC<any> = () => {
   return (
     <div className="container">
       <Head>
-        <title>
-          {pairState.symbol
-            ? `${priceFormat(pairState.lastPrice)} ${headerFormat(
-                pairState.symbol
-              )}`
-            : "Exchange Market"}
-        </title>
+        {pairState.symbol && (
+          <title>{`${priceFormat(Number(pairState.lastPrice))} ${headerFormat(
+            pairState.symbol
+          )}`}</title>
+        )}
       </Head>
+
       <Tabs
         type="card"
-        tabPosition="left"
+        tabPosition={position}
         onChange={onTabChange}
         activeKey={active}
         className={styles.currencyTabs}
       >
         {pairs.map((pair) => (
           <Tabs.TabPane tab={Tab(pair.label)} key={pair.key}>
-            <Card>
-              <h4>{pair.label}</h4>
-              <h3 className={styles.currencyPrice}>
-                {priceFormat(pairState.lastPrice)}
-              </h3>
-              <small>Volume: {pairState.volume}</small>
-            </Card>
+            <div className={styles.currencyCardContainer}>
+              <CurrencyCard
+                symbol={pair.label}
+                lastPrice={pairState.lastPrice}
+                volume={pairState.volume}
+              />
+            </div>
           </Tabs.TabPane>
         ))}
       </Tabs>

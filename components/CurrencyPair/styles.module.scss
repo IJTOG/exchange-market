@@ -1,5 +1,15 @@
 @import "styles/variables.module";
 
+.currencyCardContainer {
+  display: flex;
+  justify-content: center;
+}
+
+.currencyCard {
+  max-width: 500px;
+  width: 100%;
+}
+
 .currencyTabs {
   margin-top: 24px;
 }

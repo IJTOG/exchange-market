@@ -42,6 +42,6 @@ export const pairSlice = createSlice({
 
 export const { setPairState } = pairSlice.actions;
 
-export const selectPairState = (state: any) => state.pair.pairState;
+export const selectPairState = (state: any): Pair => state.pair.pairState;
 
 export default pairSlice.reducer;
