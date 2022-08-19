@@ -3,15 +3,14 @@
 ## Installation
 
 ```bash
-# yarn install does not work with RBH logger, so npm for install only
-$ npm install
-$ npx husky install # Git hooks
+$ yarn install
 ```
 
 ## Running the app
 
 ```bash
-npm run dev
-# or
 yarn dev
 ```
+
+## Live example
+https://exchange-market.vercel.app/
