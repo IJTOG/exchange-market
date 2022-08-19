@@ -52,11 +52,9 @@ const DefaultLayout: React.FC<any> = ({ children }) => {
         />
       </Header>
       <Layout>
-        <Layout style={{ padding: "0 24px 24px" }}>
-          <Content className="site-layout-background">
-            <div className="main">{children}</div>
-          </Content>
-        </Layout>
+        <Content className="site-layout-background">
+          <div className="main">{children}</div>
+        </Content>
       </Layout>
     </Layout>
   );

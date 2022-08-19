@@ -18,15 +18,19 @@ const CurrencyPair: React.FC<any> = () => {
   const [active, setActive] = useState<string>("");
   const [position, setPosition] = useState<TabsPosition>("left");
 
-  useEffect(() => {
-    function handleResize() {
-      if (window.innerWidth <= 700 && position === "left") {
-        setPosition("top");
-      } else if (window.innerWidth > 700 && position === "top") {
-        setPosition("left");
-      }
+  const handleResize = () => {
+    if (window.innerWidth <= 700 && position === "left") {
+      setPosition("top");
+    } else if (window.innerWidth > 700 && position === "top") {
+      setPosition("left");
     }
+  };
 
+  useEffect(() => {
+    handleResize();
+  }, []);
+
+  useEffect(() => {
     window.addEventListener("resize", handleResize);
 
     return () => {
