@@ -1,33 +1,51 @@
-import publicController from "@/services/api/public";
+import { createSocketChannel, createWebSocketConnection } from "@/services/ws";
 import { createAction } from "@reduxjs/toolkit";
-import { call, put, all, takeLatest } from "redux-saga/effects";
+import {
+  call,
+  put,
+  all,
+  takeLatest,
+  cancelled,
+  take
+} from "redux-saga/effects";
 import { setPairState } from "store/pairSlice";
 
-export const fetch24hrsTicker = createAction<string>("saga/24hrsTicker");
-
-function delay(duration: number) {
-  const promise = new Promise((resolve) => {
-    setTimeout(() => resolve(true), duration);
-  });
-  return promise;
-}
+export const tickerStream = createAction<string>("saga/tickerStream");
 
 export function* fetchDataSaga({ payload }: { payload: string }): any {
-  try {
-    if (!payload) {
-      return null;
-    }
-    let result = yield call(() => publicController().get24HrsTicker(payload));
+  let socket;
+  let socketChannel;
 
-    yield put(setPairState(result.data));
-    yield call(delay, 5000);
-    yield put(fetch24hrsTicker(payload));
-  } catch (e) {
-    console.log(e);
-    // yield put({ type: "TODO_FETCH_FAILED" });
+  try {
+    socket = yield call(createWebSocketConnection);
+    socketChannel = yield call(createSocketChannel, socket);
+
+    while (true) {
+      // wait for a message from the channel
+      const pl = yield take(socketChannel);
+      const result = pl.find((item: any) => item.s === payload.toLowerCase());
+
+      // a message has been received, dispatch an action with the message payload
+      yield put(
+        setPairState({
+          symbol: result.s,
+          volume: result.v,
+          lastPrice: result.c
+        })
+      );
+    }
+  } catch {
+  } finally {
+    if (yield cancelled()) {
+      // close the channel
+      socketChannel.close();
+
+      // close the WebSocket connection
+      socket.close();
+    }
   }
 }
 
 export function* watchPairSaga(): any {
-  yield all([yield takeLatest(fetch24hrsTicker, fetchDataSaga)]);
+  yield all([yield takeLatest(tickerStream, fetchDataSaga)]);
 }

@@ -4,7 +4,7 @@ import { Tabs } from "antd";
 import { pairs } from "utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { selectPairState } from "store/pairSlice";
-import { fetch24hrsTicker } from "store/saga/pair";
+import { tickerStream } from "store/saga/pair";
 import Head from "next/head";
 import styles from "./styles.module.scss";
 import { priceFormat } from "@/utils/formatNumber";
@@ -27,10 +27,6 @@ const CurrencyPair: React.FC<any> = () => {
   };
 
   useEffect(() => {
-    handleResize();
-  }, []);
-
-  useEffect(() => {
     window.addEventListener("resize", handleResize);
 
     return () => {
@@ -47,16 +43,16 @@ const CurrencyPair: React.FC<any> = () => {
 
   useEffect(() => {
     if (active) {
-      dispatch(fetch24hrsTicker(active));
+      dispatch(tickerStream(active));
     }
   }, [active]);
 
-  useEffect(
-    () => () => {
-      dispatch(fetch24hrsTicker(""));
-    },
-    []
-  );
+  useEffect(() => {
+    handleResize();
+    return () => {
+      dispatch(tickerStream(""));
+    };
+  }, []);
 
   const onTabChange = (key: string) => {
     router.replace({ pathname: `/markets/${key}` }, undefined, {
