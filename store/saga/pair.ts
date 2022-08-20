@@ -1,4 +1,5 @@
-import { createSocketChannel, createWebSocketConnection } from "@/services/ws";
+import { createSocketChannel } from "@/services/ws";
+import { MiniTickerWs } from "@/services/ws/miniTicker";
 import { createAction } from "@reduxjs/toolkit";
 import {
   call,
@@ -17,7 +18,7 @@ export function* fetchDataSaga({ payload }: { payload: string }): any {
   let socketChannel;
 
   try {
-    socket = yield call(createWebSocketConnection);
+    socket = yield call(MiniTickerWs);
     socketChannel = yield call(createSocketChannel, socket);
 
     while (true) {

@@ -1,8 +1,8 @@
 import { END, eventChannel } from "redux-saga";
 
-export function createWebSocketConnection() {
+export function createWebSocketConnection(endpoint: string) {
   return new Promise((resolve, reject) => {
-    const socket = new WebSocket("wss://ws.satangcorp.com/ws/!miniTicker@arr");
+    const socket = new WebSocket(`wss://ws.satangcorp.com/ws/${endpoint}`);
 
     socket.onopen = function () {
       resolve(socket);
@@ -14,7 +14,7 @@ export function createWebSocketConnection() {
   });
 }
 
-export function createSocketChannel(socket: any) {
+export function createSocketChannel(socket: WebSocket) {
   return eventChannel((emit) => {
     socket.onmessage = (event: any) => {
       const json = JSON.parse(event.data);
