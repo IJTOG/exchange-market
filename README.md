@@ -13,4 +13,4 @@ yarn dev
 ```
 
 ## Live example
-https://exchange-market.vercel.app/
+https://exchange-market-qjy9n7qxr-ijtog.vercel.app/
